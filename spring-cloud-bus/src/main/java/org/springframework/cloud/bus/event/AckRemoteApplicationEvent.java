@@ -31,7 +31,8 @@ public class AckRemoteApplicationEvent extends RemoteApplicationEvent {
 
 	private final String ackId;
 	private final String ackDestinationService;
-	private final Class<? extends RemoteApplicationEvent> event;
+	private final String event;
+	private Class<? extends RemoteApplicationEvent> eventType;
 
 	@SuppressWarnings("unused")
 	private AckRemoteApplicationEvent() {
@@ -47,7 +48,8 @@ public class AckRemoteApplicationEvent extends RemoteApplicationEvent {
 		super(source, originService, destinationService);
 		this.ackDestinationService = ackDestinationService;
 		this.ackId = ackId;
-		this.event = type;
+		this.event = type.getName();
+		this.eventType = type;
 	}
 
 	public String getAckId() {
@@ -59,7 +61,14 @@ public class AckRemoteApplicationEvent extends RemoteApplicationEvent {
 	}
 
 	public Class<? extends RemoteApplicationEvent> getEvent() {
-		return event;
+		if (this.eventType == null) {
+			try {
+				this.eventType = (Class<? extends RemoteApplicationEvent>) Class.forName(event);
+			} catch (ClassNotFoundException e) {
+				this.eventType = UnknownRemoteApplicationEvent.class;
+			}
+		}
+		return this.eventType;
 	}
 
 	@Override

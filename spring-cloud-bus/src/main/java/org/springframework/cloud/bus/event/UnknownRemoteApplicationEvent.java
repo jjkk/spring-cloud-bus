@@ -34,7 +34,7 @@ public class UnknownRemoteApplicationEvent extends RemoteApplicationEvent {
 	}
 
 	public UnknownRemoteApplicationEvent(Object source, String typeInfo, byte[] payload) {
-		super(source, null, null);
+		super(source, "", null);
 		this.typeInfo = typeInfo;
 		this.payload = payload;
 	}
